@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>To Do List</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background:rgb(80, 44, 96);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .todo-container {
+      width:800px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.54);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+#ekle {
+  width: 100px;
+  height: 30px;
+  border-radius: 10%;
+  border: none;
+  background-color:rgb(142, 76, 175);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#ekle:hover {
+  background-color:rgb(160, 69, 145);
+
+
+
+
+
+
+
+
+
+    .todo-box {
+      width:600px;
+      flex: 1;
+    }
+    .done {
+      text-decoration: line-through;
+      color: gray;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+    }
+    li {
+      margin: 5px 0;
+    }
+    button {
+      margin-left:40px;
+      cursor: pointer;
+      color:rgba(135, 132, 135, 0.85);
+      width: 90px;
+
+    }
+    .todo-image img {
+      width: 400px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="todo-container width:300px;">
+    <div class="todo-box">
+      <h1>Yapılacak İşler</h1>
+      <input id="gorev" type="text" placeholder="Boş işler mühendisiyim">
+      <button id="ekle">Ekle</button>
+      <ul id="liste"></ul>
+    </div>
+    <div class="todo-image">
+      <img src="image/indir.jpg" alt="To Do List Görseli">
+    </div>
+  </div>
+</div>
+
+<script>
+  $(function(){
+
+    
+    $("#ekle").click(function(){
+      var yazi = $("#gorev").val().trim();
+      if(yazi){
+        $("#liste").append("<li>"+yazi+" <button class='tamamla'>✓</button> <button class='sil'>X</button></li>");
+        $("#gorev").val("");
+      }
+    });
+
+    
+    $("#gorev").keypress(function(e){
+      if(e.which == 13) $("#ekle").click();
+    });
+
+    
+    $(document).on("click",".tamamla",function(){
+      $(this).parent().toggleClass("done");
+    });
+
+
+    $(document).on("click",".sil",function(){
+      $(this).parent().remove();
+    });
+
+  });
+</script>
+</body>
+</html>
+
