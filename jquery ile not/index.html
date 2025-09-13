@@ -2,12 +2,11 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>To Do List</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <title>To-Do List</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background:rgb(80, 44, 96);
+      background: rgb(80, 44, 96);
       height: 100vh;
       margin: 0;
       display: flex;
@@ -15,7 +14,7 @@
       align-items: center;
     }
     .todo-container {
-      width:800px;
+      width: 800px;
       background: #fff;
       padding: 20px;
       border-radius: 10px;
@@ -24,30 +23,21 @@
       align-items: center;
       gap: 20px;
     }
-#ekle {
-  width: 100px;
-  height: 30px;
-  border-radius: 10%;
-  border: none;
-  background-color:rgb(142, 76, 175);
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-#ekle:hover {
-  background-color:rgb(160, 69, 145);
-
-
-
-
-
-
-
-
-
+    #ekle {
+      width: 100px;
+      height: 30px;
+      border-radius: 10%;
+      border: none;
+      background-color: rgb(142, 76, 175);
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    #ekle:hover {
+      background-color: rgb(160, 69, 145);
+    }
     .todo-box {
-      width:600px;
+      width: 600px;
       flex: 1;
     }
     .done {
@@ -63,62 +53,127 @@
       margin: 5px 0;
     }
     button {
-      margin-left:40px;
+      margin-left: 10px;
       cursor: pointer;
-      color:rgba(135, 132, 135, 0.85);
-      width: 90px;
-
+      color: rgba(135, 132, 135, 0.85);
+      width: 70px;
     }
     .todo-image img {
       width: 400px;
       height: auto;
     }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 400px;
+      text-align: center;
+    }
+    .modal-content input {
+      width: 90%;
+      padding: 8px;
+      margin-bottom: 15px;
+    }
+    .modal-content button {
+      margin: 5px;
+      width: 80px;
+    }
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="todo-container width:300px;">
-    <div class="todo-box">
-      <h1>Yapılacak İşler</h1>
-      <input id="gorev" type="text" placeholder="Boş işler mühendisiyim">
-      <button id="ekle">Ekle</button>
-      <ul id="liste"></ul>
-    </div>
-    <div class="todo-image">
-      <img src="image/indir.jpg" alt="To Do List Görseli">
+  <div class="container">
+    <div class="todo-container">
+      <div class="todo-box">
+        <h1>Yapılacak İşler</h1>
+        <input id="gorev" type="text" placeholder="Boş işler mühendisiyim">
+        <button id="ekle">Ekle</button>
+        <ul id="liste"></ul>
+      </div>
+      <div class="todo-image">
+        <img src="image/indir.jpg" alt="To Do List Görseli">
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-  $(function(){
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h2>Görevi Düzenle</h2>
+      <input type="text" id="editInput">
+      <br>
+      <button id="saveEdit">Kaydet</button>
+      <button id="cancelEdit">İptal</button>
+    </div>
+  </div>
 
-    
-    $("#ekle").click(function(){
-      var yazi = $("#gorev").val().trim();
-      if(yazi){
-        $("#liste").append("<li>"+yazi+" <button class='tamamla'>✓</button> <button class='sil'>X</button></li>");
-        $("#gorev").val("");
-      }
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(function(){
+      $("#ekle").click(function(){
+        var yazi = $("#gorev").val().trim();
+        if(yazi){
+          $("#liste").append("<li>"+yazi+" <button class='tamamla'>✓</button> <button class='sil'>X</button> <button class='duzenle'>Düzenle</button></li>");
+          $("#gorev").val("");
+        }
+      });
+
+      $("#gorev").keypress(function(e){
+        if(e.which == 13) $("#ekle").click();
+      });
+
+      $(document).on("click",".tamamla",function(){
+        $(this).parent().toggleClass("done");
+      });
+
+      $(document).on("click",".sil",function(){
+        $(this).parent().remove();
+      });
+
+      let seciliLi = null;
+
+      $(document).on("click",".duzenle",function(){
+        seciliLi = $(this).parent();
+        var mevcutYazi = seciliLi.contents().get(0).nodeValue.trim();
+        $("#editInput").val(mevcutYazi);
+        $("#editModal").css("display","flex");
+      });
+
+      $("#saveEdit").click(function(){
+        if(seciliLi){
+          var yeniYazi = $("#editInput").val().trim();
+          if(yeniYazi){
+            seciliLi.contents().get(0).nodeValue = yeniYazi + " ";
+          }
+          $("#editModal").hide();
+          seciliLi = null;
+        }
+      });
+
+      $("#cancelEdit").click(function(){
+        $("#editModal").hide();
+        seciliLi = null;
+      });
+
+      $(window).click(function(e){
+        if(e.target.id === "editModal"){
+          $("#editModal").hide();
+          seciliLi = null;
+        }
+      });
     });
-
-    
-    $("#gorev").keypress(function(e){
-      if(e.which == 13) $("#ekle").click();
-    });
-
-    
-    $(document).on("click",".tamamla",function(){
-      $(this).parent().toggleClass("done");
-    });
-
-
-    $(document).on("click",".sil",function(){
-      $(this).parent().remove();
-    });
-
-  });
-</script>
+  </script>
 </body>
 </html>
+    
 
